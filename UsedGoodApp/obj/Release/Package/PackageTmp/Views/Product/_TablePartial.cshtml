@@ -1,0 +1,61 @@
+﻿@model IEnumerable<UsedGoodApp.Models.IndexViewModel>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.EditorFor(modelItem => item.IsChecked, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control check {item.Id}" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.Name, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} nm" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.ArrivalDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} ad" } })
+    </td>
+    <td>
+        @Html.DropDownListFor(modelItem => item.CategoryId, new SelectList(ViewBag.Categories as IEnumerable<SelectListItem>, "Value", "Text", selectedValue: item.CategoryId), htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} ct" })
+    </td>
+    <td>
+        @Html.DropDownListFor(modeltem => item.SubCategoryId, new SelectList((IEnumerable<SelectListItem>)ViewBag.SubCategories, "Value", "Text", $"{item.SubCategoryId}_{item.CategoryId}"), htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} sc" })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.Price, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} pr" } })
+    </td>
+    <td>
+        @Html.CheckBoxFor(modeltem => item.IsOutOfUse, htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} io" })
+    </td>
+    <td>
+        @Html.DropDownListFor(modeltem => item.WarehouseId, new SelectList(ViewBag.Warehouses as IEnumerable<SelectListItem>, "Value", "Text", item.WarehouseId), htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} lc" })
+    </td>
+    <td>
+        @Html.DropDownListFor(modeltem => item.Status, new SelectList(ViewBag.Statuses as IEnumerable<SelectListItem>, "Value", "Text", selectedValue: item.Status), htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} st" })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.SaleDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} sd" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.SalePrice, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} sp" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.RepairStatus, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} rs" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.RepairPersonName, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} rpn" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.RepairStartDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} rsd" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.RepairFinishDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} rfd" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.PurchasePrice, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} pp" } })
+    </td>
+    <td>
+        @Html.EditorFor(modeltem => item.IssueDescription, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control editable {item.Id} id" } })
+    </td>
+    <td>
+        @Html.DropDownListFor(modeltem => item.Reserved, new SelectList(ViewBag.Reserved as IEnumerable<SelectListItem>, "Value", "Text", selectedValue: !string.IsNullOrEmpty(item.Reserved) ? "1" : "0"), htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} rev" })
+    </td>
+</tr>
+}
+

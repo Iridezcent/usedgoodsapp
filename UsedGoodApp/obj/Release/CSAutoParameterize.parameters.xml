@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IdentityUserDb-Web.config Connection String" description="IdentityUserDb Строка подключения в web.config, используемая приложением для доступа к базе данных." defaultValue="Data Source=(LocalDb)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\IdentityUserDb.mdf;Integrated Security=True;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Projects\\ASP\.NET\ MVC\\UsedGoodApp\\UsedGoodApp\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='IdentityUserDb']/@connectionString" />
+  </parameter>
+  <parameter name="ProductsContext-Web.config Connection String" description="ProductsContext Строка подключения в web.config, используемая приложением для доступа к базе данных." defaultValue="Data Source=(LocalDb)\MSSQLLocalDB;AttachDBFilename=|DataDirectory|\ProductsContext.mdf;Integrated Security=true;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Projects\\ASP\.NET\ MVC\\UsedGoodApp\\UsedGoodApp\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ProductsContext']/@connectionString" />
+  </parameter>
+</parameters>

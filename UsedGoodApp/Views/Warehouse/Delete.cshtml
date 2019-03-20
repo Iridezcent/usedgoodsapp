@@ -1,0 +1,25 @@
+﻿@model UsedGoodApp.Models.Warehouse
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h3>Вы уверенны что хотите удалить этот склад?</h3>
+<div>
+    <dl class="dl-horizontal">
+       
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Вернуться к списку", "Index")
+        </div>
+    }
+</div>

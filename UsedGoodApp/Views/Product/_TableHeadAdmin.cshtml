@@ -1,0 +1,58 @@
+﻿@model IEnumerable<UsedGoodApp.Models.IndexViewModel>
+
+<tr>
+    <th>
+        <input type="checkbox" class="form-check" id="checkAll" />
+    </th>
+    <th class="table-primary px-5">
+        @Html.DisplayNameFor(model => model.Name)
+    </th>
+    <th class="table-secondary px-4">
+        @Html.DisplayNameFor(model => model.ArrivalDate)
+    </th>
+    <th class="table-success px-5">
+        @Html.DisplayNameFor(model => model.CategoryId)
+    </th>
+    <th class="table-danger px-4">
+        @Html.DisplayNameFor(model => model.SubCategoryId)
+    </th>
+    <th class="table-warning px-5" id="editPriceAll">
+        @Html.DisplayNameFor(model => model.Price)
+    </th>
+    <th class="table-info">
+        @Html.DisplayNameFor(model => model.IsOutOfUse)
+    </th>
+    <th class="table-dark text-white px-5">
+        @Html.DisplayNameFor(model => model.WarehouseId)
+    </th>
+    <th class="table-primary px-5">
+        @Html.DisplayNameFor(model => model.Status)
+    </th>
+    <th class="table-secondary px-5">
+        @Html.DisplayNameFor(model => model.SaleDate)
+    </th>
+    <th class="table-success">
+        @Html.DisplayNameFor(model => model.SalePrice)
+    </th>
+    <th class="table-danger px-5">
+        @Html.DisplayNameFor(model => model.RepairStatus)
+    </th>
+    <th class="table-warning px-5">
+        @Html.DisplayNameFor(model => model.RepairPersonName)
+    </th>
+    <th class="table-info">
+        @Html.DisplayNameFor(model => model.RepairStartDate)
+    </th>
+    <th class="table-dark text-white">
+        @Html.DisplayNameFor(model => model.RepairFinishDate)
+    </th>
+    <th class="table-primary px-2">
+        @Html.DisplayNameFor(model => model.PurchasePrice)
+    </th>
+    <th class="table-secondary px-4">
+        @Html.DisplayNameFor(model => model.IssueDescription)
+    </th>
+    <th class="table-success px-4">
+        @Html.DisplayNameFor(model => model.Reserved)
+    </th>
+</tr>

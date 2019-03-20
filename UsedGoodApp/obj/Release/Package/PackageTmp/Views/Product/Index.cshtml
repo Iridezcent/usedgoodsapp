@@ -1,0 +1,327 @@
+﻿@model IEnumerable<UsedGoodApp.Models.IndexViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row mt-4 position-sticky">
+    <div class="col">
+        <form class="form">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="filterCategory">Категория </label>
+                    @Html.DropDownList("filterCategory", new SelectList((IEnumerable<SelectListItem>)ViewBag.Categories, "Value", "Text"), null, htmlAttributes: new { @class = "form-control", @placeholder = "Выберите категорию", @id = "filterCategory" })
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="filterWarehouse">Склад </label>
+                    @Html.DropDownList("filterWarehouse", new SelectList((IEnumerable<SelectListItem>)ViewBag.Warehouses, "Value", "Text"), null, htmlAttributes: new { @class = "form-control", @placeholder = "Выберите склад", @id = "filterWarehouse" })
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="filterState"> Статус </label>
+                    @Html.DropDownList("filterStatus", new SelectList((IEnumerable<SelectListItem>)ViewBag.Statuses, "Value", "Text"), null, htmlAttributes: new { @class = "form-control", @placeholder = "Выберите статус", @id = "filterStatus" })
+                </div>
+                <div class="form-group col-md-3 mt-auto">
+                    <input type="button" class="btn btn-outline-info" name="search" id="search" value="Поиск" />
+                </div>
+            </div>                      
+        </form>      
+    </div>   
+</div>
+
+<div id="statusBar" class="row mb-2">
+    <div id="resultInfo" class="text-success ml-3"></div>
+    @Html.Action("RenderMenuButtons")
+</div>
+
+<div class="table-wrapper-scroll-y">
+    <table class="table table-sm table-responsive" id="dataTable">
+        <thead>
+           @Html.Action("RenderTableHead")
+        </thead>
+        @using (Html.BeginForm())
+        {
+            //@Html.AntiForgeryToken()
+                <tbody id="tbody">
+                    @Html.Action("RenderTable")
+                </tbody>
+         }
+    </table>
+</div>
+ <input type="button" class="btn btn-outline-info float-right mt-3" id="nextQuery" value="Загрузить еще" />
+@*<input type="button" id="sendAjax" value="Ajax" />*@
+
+
+@section scripts
+    {
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>   
+        <script>
+
+            var idString = '';
+
+            $(document).ready(function () {
+                configureTable();
+                bindClickTh();
+            });                
+            
+            $("#tbody").dblclick(function () {
+                var arr = [];
+                getJsonArray(idString, arr);
+                $.ajax(
+                    {
+                        url: '@Url.Action("Edit")',
+                        method: "POST",
+                        contentType: 'application/json; charset=utf-8',
+                        headers: {
+                        'RequestVerificationToken': '@TokenHeaderValue()'
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("Произошла ошибка при отправке данных на сервер");
+                        },
+                        data: JSON.stringify(arr),
+                        success: function () {
+                            $("#resultInfo").text("Изменения успешно сохранены");
+                            setTimeout(function () {
+                                $("#resultInfo").text("");
+                            }, 5000);
+                        }
+                    });
+                idString = '';
+            });
+
+            @functions{
+                public string TokenHeaderValue()
+                {
+                     string cookieToken, formToken;
+                     AntiForgery.GetTokens(null, out cookieToken, out formToken);
+                     return cookieToken + ":" + formToken;                
+                }
+            }
+
+            $('#search').click(function () {               
+                var filter = {
+                    Category: $("#filterCategory").val(),
+                    Status: $("#filterStatus").val(),
+                    Warehouse: $("#filterWarehouse").val()
+                };
+                $.ajax({
+                    url: '@Url.Action("Search")',
+                    method: "POST",
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(filter),
+                    dataType: "html",
+                    success: function (result) {
+                        $("#tbody").html(result);
+                        configureTable();
+                    }
+                });
+            });           
+            
+            $('#deleteBtn').click(function () {
+                var $ids = '';
+                var $inputs = $('input.check').toArray();
+
+                var isSure = confirm("Вы уверенны что хотите удалить выбранные элементы ?")
+                if (isSure == false)
+                    return;
+
+                $inputs.forEach(function (input) {
+                    if ($(input).prop("checked") == true) {
+                        var $fullClassName = $(input).attr("class");
+                        var $id = $fullClassName.split(' ')[2];
+                        $ids += $id + " ";
+                    }  
+                });
+                $.ajax({
+                    url: '@Url.Action("Delete")',
+                    method: "POST",
+                    data: {ids: $ids},
+                    dataType: "html",
+                    headers: {
+                        'RequestVerificationToken': '@TokenHeaderValue()'
+                    },
+                    success: function (result) {
+                        $("#tbody").html(result);
+                        configureTable();
+                    }
+                });
+            })
+
+            $("#checkAll").click(function () {
+                var $inputs = $('input.check').toArray();
+                if ($(this).prop("checked") == true) {
+                    $inputs.forEach(function (input) {
+                        $(input).prop("checked", true);
+                    });
+                }
+                else if ($(this).prop("checked") == false){
+                    $inputs.forEach(function (input) {
+                        $(input).prop("checked", false);
+                    });
+                }
+            })
+
+            $("#nextQuery").click(function () {
+                $.ajax({
+                    url: '@Url.Action("NextQuery")',
+                    method: "GET",
+                    dataType: "html",                   
+                    success: function (result) {
+                        $("#tbody").append(result);
+                        configureTable();
+                    }
+                });
+            })
+
+            function configureTable() {
+                bindClick();
+                configureCategories();
+            }
+
+            function bindClick() {
+
+                $(".editable").focus(function () {
+                    var $fullClassName = $(this).attr("class");
+                    var $splited = $fullClassName.split(' ');
+                    var $id = $splited[2];
+                    var $field = $splited[3];
+
+                    var $searchStr = ".editable." + $id + "." + $field;
+
+                    if (!idString.includes($id))
+                        idString += $id + ' ';
+
+                    if ($($searchStr).is("[readonly]"))
+                        $($searchStr).prop("readonly", false);
+                });
+
+                $(".editable").focusout(function () {
+                    var $fullClassName = $(this).attr("class");
+                    var $splited = $fullClassName.split(' ');
+                    var $id = $splited[2];
+                    var $field = $splited[3];
+
+                    var $searchStr = ".editable." + $id + "." + $field;
+                    $($searchStr).prop("readonly", true);
+                    if ($field == "ct")
+                        getSubCategory($id);
+                });
+            }     
+
+            function getJsonArray(id, array) {
+                var $idArray = id.split(' ');
+                for (var item in $idArray) {
+                    var elementId = $idArray[item];
+                    if ($idArray[item] === "")
+                        break;
+                    array.push({
+                        Id: elementId,
+                        Name: $("input.editable." + elementId + ".nm").val(),
+                        ArrivalDate: $("input.editable." + elementId + ".ad").val(),
+                        CategoryId: $(".editable." + elementId + ".ct").val(),
+                        SubCategoryId: $(".editable." + elementId + ".sc").val(),
+                        Price: $("input.editable." + elementId + ".pr").val(),
+                        IsOutOfUse: $("input.editable." + elementId + ".io").is(':checked'),
+                        WarehouseId: $(".editable." + elementId + ".lc").val(),
+                        Status: $(".editable." + elementId + ".st").val(),
+                        SaleDate: $(".editable." + elementId + ".sd").val(),
+                        SalePrice: $(".editable." + elementId + ".sp").val(),
+                        RepairStatus: $(".editable." + elementId + ".rs").val(),
+                        RepairPersonName: $(".editable." + elementId + ".rpn").val(),
+                        RepairStartDate: $(".editable." + elementId + ".rsd").val(),
+                        RepairFinishDate: $(".editable." + elementId + ".rfd").val(),
+                        PurchasePrice: $(".editable." + elementId + ".pp").val(),
+                        IssueDescription: $(".editable." + elementId + ".id").val(),
+                        Reserved: $(".editable." + elementId + ".rev").val(),
+                    })
+                }
+            }
+
+            //EditPriceAllClick Function
+            function bindClickTh() {
+                $("#editPriceAll").click(function () {
+                    $(this).replaceWith('<input type="text" class="form-control" style="width:137px" id="editPriceAll" placeholder="Введите цену">');
+                    //$(this).attr("contentEditable", true);
+                    //$(this).text("");
+                    bindFocusOut();
+                })
+            }
+
+            //EditPriceAllFocusOut Function
+            function bindFocusOut() {
+                $("#editPriceAll").focusout(function () {
+                    var percent = $(this).val();
+                    if (percent) {
+                        if (validatePrice(percent) == null) {
+                            alert("Неверно указан формат для увелечения цены")
+                            return;
+                        }
+                        else {
+                            editPrice(percent);
+                        }
+                     }
+                    $(this).replaceWith('<th class="table-warning px-5" id="editPriceAll">Цена</th>');
+                    bindClickTh();
+                })
+            }
+
+            //Validate EditPriceAll input
+            function validatePrice(price) {
+                var re = new RegExp(/\+\d{1,3}$|\-\d{1,3}$/);
+                return price.match(re);
+            }
+
+            //Edit all selected price values
+            function editPrice(price) {
+                var arr = $("input.check").toArray();
+                var sign = price[0];
+                var priceClear = price.substr(1);
+                arr.forEach(function (item) {
+                    if ($(item).prop("checked") == true) {
+                        var fullClassName = $(item).attr("class");
+                        var id = fullClassName.split(" ")[2];
+                        var oldValue = $("input.editable." + id + ".pr").val();
+                        oldValue = parseInt(oldValue);
+                        var newValue = 0;
+                        if (sign == "+")
+                            newValue = Number(((oldValue / 100) * priceClear) + oldValue).toFixed(2);
+                        else
+                            newValue = Number(oldValue - ((oldValue / 100) * priceClear)).toFixed(2);
+                        if (newValue < 0)
+                            newValue = 0;
+                        if (!idString.includes(id))
+                            idString += id + ' ';
+                        $("input.editable." + id + ".pr").val(newValue);
+                        oldValue = 0;
+                    }
+                })
+            }
+
+            function configureCategories() {
+                var categories = $(".editable.ct").toArray();
+                categories.forEach(function (item) {
+                    var elementId = $(item).attr("class").split(" ")[2];
+                    var selectedId = $(".editable." + elementId + ".ct  option:selected").attr("value");
+                    var subcategoryChild = $(".editable." + elementId + ".sc").children().toArray();
+                    subcategoryChild.forEach(function (subItem) {
+                        if ($(subItem).attr("value") == "")
+                            return;
+                        if ($(subItem).attr("value").split("_")[1] != selectedId)
+                            $(subItem).css("display", "none");
+                    });
+                });
+                //$(".editable.sc");
+            }
+
+            function getSubCategory(id) {
+                var category = $(".editable." + id + ".ct").val();
+                var subCategoryChild = $(".editable." + id + ".sc").children().toArray();
+                subCategoryChild.forEach(function (item) {
+                    if ($(item).attr("value").split("_")[1] != category && $(item).attr("value") != "")
+                        $(item).css("display", "none");
+                    else
+                        $(item).removeAttr("style");
+                });
+                $(".editable." + id + ".sc").val("");
+            }
+        </script>
+    }

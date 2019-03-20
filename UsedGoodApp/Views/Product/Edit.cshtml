@@ -1,0 +1,12 @@
+﻿@model UsedGoodApp.Models.IndexViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@Html.Action("RenderEditView", new { product = Model})
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

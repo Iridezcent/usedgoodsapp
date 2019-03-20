@@ -1,0 +1,106 @@
+﻿@model IEnumerable<UsedGoodApp.Models.IndexViewModel>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.EditorFor(modeltem => item.Name, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.ArrivalDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @{
+                var categoryList = ViewBag.Categories as IEnumerable<SelectListItem>;
+                var categoryValue = Convert.ToString(item.CategoryId);
+                string category = String.Empty;
+                if (item.CategoryId != 0)
+                {
+                    category = categoryList.FirstOrDefault(c => c.Value == categoryValue).Text;
+                }
+                <input type="text" value="@category" class="form-control" readonly />
+            }
+        </td>
+        @*<td>
+                @Html.DropDownListFor(modelItem => item.CategoryId, new SelectList(ViewBag.Categories as IEnumerable<SelectListItem>, "Value", "Text", selectedValue: item.CategoryId), htmlAttributes: new { @readonly = "readonly", @class = $"form-control" })
+            </td>*@
+        <td>
+            @{
+                var subCategoryList = ViewBag.SubCategories as IEnumerable<SelectListItem>;
+                var subCategoryValue = Convert.ToString(item.SubCategoryId);
+                string subCategory = String.Empty;
+                if (item.SubCategoryId != 0)
+                {
+                    subCategory = subCategoryList.FirstOrDefault(c => c.Value == $"{item.SubCategoryId}_{item.CategoryId}").Text;
+                }
+                <input type="text" value="@subCategory" class="form-control" readonly />
+            }
+        </td>
+        @*<td>
+                @Html.DropDownListFor(modeltem => item.SubCategoryId, new SelectList((IEnumerable<SelectListItem>)ViewBag.SubCategories, "Value", "Text", $"{item.SubCategoryId}_{item.CategoryId}"), htmlAttributes: new { @readonly = "readonly", @class = $"form-control" })
+            </td>*@
+        <td>
+            @Html.EditorFor(modeltem => item.Price, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.CheckBoxFor(modeltem => item.IsOutOfUse, htmlAttributes: new { @readonly = "readonly", @class = $"form-control" })
+        </td>
+        <td>
+            @{
+                var warehouses = ViewBag.Warehouses as IEnumerable<SelectListItem>;
+                var warehouseValue = Convert.ToString(item.WarehouseId);
+                string warehouse = String.Empty;
+                if (item.WarehouseId != 0)
+                {
+                    warehouse = warehouses.FirstOrDefault(c => c.Value == warehouseValue).Text;
+                }
+                <input type="text" value="@warehouse" class="form-control" readonly />
+            }
+        </td>
+        @*<td>
+                @Html.DropDownListFor(modeltem => item.WarehouseId, new SelectList(ViewBag.Warehouses as IEnumerable<SelectListItem>, "Value", "Text", item.WarehouseId), htmlAttributes: new { @readonly = "readonly", @class = $"form-control" })
+            </td>*@
+        <td>
+            @{
+                var statuses = ViewBag.Statuses as IEnumerable<SelectListItem>;
+                var statusValue = Convert.ToString(item.Status);
+                string status = String.Empty;
+                if (item.Status != 0)
+                {
+                    status = statuses.FirstOrDefault(c => c.Value == statusValue).Text;
+                }
+                <input type="text" value="@status" class="form-control" readonly />
+            }
+        </td>
+        @*<td>
+                @Html.DropDownListFor(modeltem => item.Status, new SelectList(ViewBag.Statuses as IEnumerable<SelectListItem>, "Value", "Text", selectedValue: item.Status), htmlAttributes: new { @readonly = "readonly", @class = $"form-control" })
+            </td>*@
+        <td>
+            @Html.EditorFor(modeltem => item.SaleDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.SalePrice, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.RepairStatus, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.RepairPersonName, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.RepairStartDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.RepairFinishDate, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.PurchasePrice, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        <td>
+            @Html.EditorFor(modeltem => item.IssueDescription, new { htmlAttributes = new { @readonly = "readonly", @class = $"form-control" } })
+        </td>
+        @*<td>
+                @Html.DropDownListFor(modeltem => item.Reserved, new SelectList(ViewBag.Reserved as IEnumerable<SelectListItem>, "Value", "Text", selectedValue: !string.IsNullOrEmpty(item.Reserved) ? "1" : "0"), htmlAttributes: new { @readonly = "readonly", @class = $"form-control editable {item.Id} rev" })
+            </td>*@
+    </tr>
+}

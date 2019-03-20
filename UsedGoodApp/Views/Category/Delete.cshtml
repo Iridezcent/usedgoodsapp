@@ -1,0 +1,22 @@
+﻿@model UsedGoodApp.Models.Category
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h3>Вы уверенны что хотите удалить выбранную категорию?</h3>
+<div>
+    
+    <dl class="dl-horizontal">
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        @Html.DisplayFor(m => m.Description.Name);
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Вернуться к списку", "Index")
+        </div>
+    }
+</div>

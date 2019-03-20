@@ -1,0 +1,56 @@
+﻿@model IEnumerable<UsedGoodApp.Models.UserView>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="mt-2">Пользователи</h2>
+
+<p>
+    @Html.ActionLink("Добавить пользователя", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SelectedRole)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PhoneNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SelectedRole)
+        </td>        
+        <td>
+            <a href="@Url.Action("Edit", new {id = item.Id })"><i class="fa fa-edit ml-2" style="font-size:24px;"></i></a>
+            <a href="@Url.Action("Delete", new {id = item.Id })"><i class="fa fa-trash" style="font-size:24px;"></i></a>
+        </td>
+    </tr>
+}
+
+</table>
